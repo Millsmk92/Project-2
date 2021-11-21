@@ -33,11 +33,13 @@ ul {
 ul a {
   display: block;
   color: #fff;
-  background: #000;
+  background: rgb(3, 148, 233);
   padding: 10px;
   text-decoration: none;
   text-align: center;
   font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
 }
 
 ul a:hover {
