@@ -242,7 +242,15 @@
             arc.append("path")
                .attr("d", path)
                .attr("class", d => label(d.data.id))
-               .attr("fill", d => scale(d.data.id));
+               .attr("fill", d => scale(d.data.id))
+               .on('click', d =>
+					displayTotal()
+				);
               }
                 
+        function displayTotal() {
+          var stressed = document.getElementsByClassName("stressed")
+          var calmer = document.getElementsByClassName("calmer")
+          console.log("working")
+        }
         </script>
