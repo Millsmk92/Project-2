@@ -160,7 +160,7 @@
 				<div style="text-align: center;">
 					<h2>Visualization 3</h2>
           <p>Calmer vs. Stressed While Working From Home</p>
-					<svg class="mainvis" width="500" height="400" id="chart"></svg>
+					<svg width="500" height="400" id="chart"></svg>
           <div class="row">
             <div class="col-lg-6" style="font-size: 20px; font-weight: bold; color: #3b6fdc">Calmer</div>
             <div class="col-lg-6" style="font-size: 20px; font-weight: bold; color: #ff0033">Stressed</div>
@@ -231,16 +231,18 @@
             var g = svg.append("g")
                        .attr("transform", `translate(${width / 2}, ${height / 2})`);
             var scale = d3.scaleOrdinal(['#ff0033', '#3b6fdc'])
+            var label = d3.scaleOrdinal(['stressed', 'calmer'])
             var pie = d3.pie().value(d => d.pct);
             var arc = g.selectAll("arc")
                        .data(pie(stress_stat))
-                       .enter();
+                       .enter()
             var path = d3.arc()
                          .outerRadius(100)
                          .innerRadius(150);
             arc.append("path")
                .attr("d", path)
-               .attr("fill", function(d) { return scale(d.data.id); });
+               .attr("class", d => label(d.data.id))
+               .attr("fill", d => scale(d.data.id));
               }
                 
         </script>
