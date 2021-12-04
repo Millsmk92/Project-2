@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Workers By Sex/Age/Location Pie Charts</title>
+    <meta name="author" content="Aleksander Weber">
+    <meta name="course" content="INFO 517">
+    <meta name="description" content="Worker Data">
+    <meta charset="utf-8">
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles/project2.css">
+</head>
+<body>
+
+	<header><h1>Workers By Sex/Age/Location Pie Charts</h1></header>
+
+	<div id="charts">
+		<div id="sexes_chart">
+			<h2>Workers by Sexes</h2>
+			<ul>
+				<li>			
+					<ul>
+						<li>			
+							<text id="females" class="female" ></text>
+						</li>
+						<li>
+							<input id="femaleColor" type="color" class="female"  />
+						</li>
+					</ul>
+				</li>
+				<li>			
+					<ul>
+						<li>			
+							<text id="males" class="male" ></text>
+						</li>
+						<li>
+							<input id="maleColor" type="color" class="male"  />
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div id="ages_chart">
+			<h2>Workers by Age Groups</h2>
+<!-- 		
+			<ul>
+				<li>
+					<ul>
+						<li>			
+							<text id="ageGroup0" class="group0" ></text>
+						</li>
+						<li>
+							<input id="ageColor0" type="color" class=""  />
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>			
+							<text id="ageGroup1" class="group1" ></text>
+						</li>
+						<li>
+							<input id="ageColor1" type="color" class=""  />
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>			
+							<text id="ageGroup2" class="group2" ></text>
+						</li>
+						<li>
+							<input id="ageColor2" type="color" class=""  />
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>			
+							<text id="ageGroup3" class="group3" ></text>
+						</li>
+						<li>
+							<input id="ageColor3" type="color" class=""  />
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>			
+							<text id="ageGroup4" class="group4" ></text>
+						</li>
+						<li>
+							<input id="ageColor4" type="color" class=""  />
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>			
+							<text id="ageGroup5" class="group5" ></text>
+						</li>
+						<li>
+							<input id="ageColor5" type="color" class=""  />
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>			
+							<text id="ageGroup6" class="group6" ></text>
+						</li>
+						<li>
+							<input id="ageColor6" type="color" class=""  />
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>			
+							<text id="ageGroup7" class="group7" ></text>
+						</li>
+						<li>
+						<input id="ageColor7" type="color" class=""  />
+						</li>
+					</ul>
+				</li>
+			</ul>
+ -->			
+			<ul>
+				<li>
+					<text id="ageGroup0" class="group0" ></text>
+					<input id="ageColor0" type="color" class=""  />
+				</li>
+				<li>
+					<text id="ageGroup1" class="group1" ></text>
+					<input id="ageColor1" type="color" class=""  />
+				</li>
+				<li>
+					<text id="ageGroup2" class="group2" ></text>
+					<input id="ageColor2" type="color" class=""  />
+				</li>
+				<li>
+					<text id="ageGroup3" class="group3" ></text>
+					<input id="ageColor3" type="color" class=""  />
+				</li>
+				<li>
+					<text id="ageGroup4" class="group4" ></text>
+					<input id="ageColor4" type="color" class=""  />
+				</li>
+				<li>
+					<text id="ageGroup5" class="group5" ></text>
+					<input id="ageColor5" type="color" class=""  />
+				</li>
+				<li>
+					<text id="ageGroup6" class="group6" ></text>
+					<input id="ageColor6" type="color" class=""  />
+				</li>
+				<li>
+					<text id="ageGroup7" class="group7" ></text>
+					<input id="ageColor7" type="color" class=""  />
+				</li>
+			</ul>
+		</div>
+		<div id="locations_chart">
+			<h2>Workers by Location</h2>
+			<ul>
+				<li>			
+					<ul>
+						<li>			
+							<text id="same_location" class="same" ></text>
+						</li>
+						<li>
+							<input id="sameColor" type="color" class="same"  />
+						</li>
+					</ul>
+				</li>
+				<li>			
+					<ul>
+						<li>			
+							<text id="diff_location" class="diff" ></text>
+						</li>
+						<li>
+							<input id="diffColor" type="color" class="diff"  />
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+//------------------- pie charts ------------------------
+	/* Example Data
+	ID, // 1, 17,
+	Name, // Bhavana, Shahid,
+	Age, // 45, 25,
+	Occupation, // Tutor, Recruiter,
+	Gender, // Female, Male,
+	Same_office_home_location, //Yes, No,
+	kids, // Yes, No,
+	RM_save_money, // Yes, Yes,
+	RM_quality_time, // Yes, Yes,
+	RM_better_sleep, // Yes, Yes,
+	calmer_stressed, // CALMER, CALMER,
+	RM_professional_growth, // 5, 4,
+	RM_lazy, // 1, 3,
+	RM_productive, // 5, 2,
+	digital_connect_sufficient, // Yes, No,
+	RM_better_work_life_balance, // 5, 3,
+	RM_improved_skillset, // 5, 3,
+	RM_job_opportunities,  // Yes, Not sure,
+	Target // 1, 0,
+
+	*/
+		var BLACK_COLOR = '#000000'; // black
+		var PURPLE_COLOR = '#ff00ff'; // purple
+		
+		//var MALE_COLOR = '#006400';  // darkgreen
+		// var FEMALE_COLOR = '#ff8c00'; // darkorange
+		var MALE_COLOR = '#ff6600';  
+		var FEMALE_COLOR = '#0059be'; 
+
+		var SAME_COLOR = FEMALE_COLOR;
+		var DIFF_COLOR = MALE_COLOR;
+
+		var GROUP0_COLOR = '#1f77b4';
+		var GROUP1_COLOR = '#ff7f0e';
+		var GROUP2_COLOR = '#2ca02c';
+		var GROUP3_COLOR = '#d62728';
+		var GROUP4_COLOR = '#9467bd';
+		var GROUP5_COLOR = '#8c564b';
+		var GROUP6_COLOR = '#ff1493';
+		var GROUP7_COLOR = '#000000';		
+	
+		// initialize arrays
+		var males = 0;
+		var females = 0;
+		var same_location = 0;
+		var diff_location = 0;
+		var ages = [];
+		var sexes = [];
+		var FEMALES = 0;
+		var MALES = 1;
+		var locations = [];
+		var SAME = 0;
+		var DIFF = 1;
+		var workers = [];
+		var ageGroups = [ { lo: 20, hi: 24, cnt: 0, label: "", name: "" },
+						  { lo: 25, hi: 29, cnt: 0, label: "", name: "" },
+						  { lo: 30, hi: 34, cnt: 0, label: "", name: "" },
+						  { lo: 35, hi: 39, cnt: 0, label: "", name: "" },
+						  { lo: 40, hi: 44, cnt: 0, label: "", name: "" },
+						  { lo: 45, hi: 49, cnt: 0, label: "", name: "" },
+						  { lo: 50, hi: 54, cnt: 0, label: "", name: "" },
+						  { lo: 55, hi: 59, cnt: 0, label: "", name: "" }
+						];
+
+	Array.prototype.max = function() {
+	  return Math.max.apply(null, this);
+	};
+	Array.prototype.min = function() {
+	  return Math.min.apply(null, this);
+	};	
+
+		// load ages, sexes, etc and draw pie charts
+		d3.csv("WFH_WFO_dataset.csv", function(data) {
+			for (var i = 0; i < data.length; i++) {
+				
+				// create worker data object from data
+				var worker = create_worker_object(data, i, ageGroups);
+				if (is_female(worker)) females++;
+				if (is_male(worker)) males++;
+				if (is_same_location(worker)) same_location++;
+				if (is_diff_location(worker)) diff_location++;
+
+				// add worker data to dataset
+				workers.push(worker);
+			};
+			
+			// aggregate counts of sexes
+			sexes.push(females, males);
+
+			// aggregate counts of ages
+			for (var j = 0; j < ageGroups.length; j++) 
+				ages.push(ageGroups[j].cnt); 
+
+			// aggregate counts of locations
+			locations.push(same_location, diff_location);
+
+			draw_all();
+		});
+
+		function is_female(worker) {
+			return (worker.Gender.toLowerCase() === 'female');
+		};
+		function is_male(worker) {
+			return (worker.Gender.toLowerCase() === 'male');
+		};
+		function is_same_location(worker) {
+			return (worker.Same_location.toLowerCase() === 'yes');
+		};
+		function is_diff_location(worker) {
+			return (worker.Same_location.toLowerCase() === 'no');
+		};
+		function is_age_group(worker, ageGroups, i) {
+			return (worker.Age_Group === i || (worker.Age >= ageGroups[i].lo && worker.Age <= ageGroups[i].hi));
+		};
+		function create_worker_object(data, i, ageGroups) {
+				var age = +data[i].Age; // 45, 25,
+				var gender = data[i].Gender; // Female, Male,		
+				
+				// create worker data object from data
+				var worker = {
+					ID:  +data[i].ID, // 1, 17,
+					Age: age,
+					Gender: gender,
+					Same_location: data[i].Same_office_home_location, //Yes, No,
+					Age_Group: -1
+				};	
+				
+			worker = set_worker_age_group(worker, ageGroups);
+			return worker;
+		};
+		function set_worker_age_group(worker, ageGroups) {
+			
+			// Check which age Group this worker belongs and increment its count.
+			for (var i = 0; i < ageGroups.length; i++) {
+				if (is_age_group(worker, ageGroups, i)) {
+					worker.Age_Group = i;
+					ageGroups[i].cnt++; 
+					break;
+				}
+			};
+			return worker;
+		};
+		function create_arc(inner_radius, outer_radius) {
+			var arc = d3.svg.arc()
+							.innerRadius(inner_radius)
+							.outerRadius(outer_radius);
+
+			return arc;		
+		};
+		function create_arcs(svg, pie, x_offset, y_offset, data) {
+			var arcs = svg.selectAll("g.arc")
+						.data(pie(data))
+						.enter()
+						.append("g")
+						.attr("class", "arc")
+						.attr("transform", "translate(" + x_offset + ", " + y_offset + ")");
+			return arcs;
+		};
+		function create_pie_chart(chartName, width, height, svgName) {
+
+			var svg = d3.select("#" + chartName)
+						.append("svg")
+						.attr("width", width)
+						.attr("height", height)
+						.attr("class", "chart")
+						.attr("id", svgName);
+		
+			return svg;
+		};
+		function draw_arcs(arcs, arc, color, className) {
+			// Draw arc paths
+			arcs.append("path")
+				.attr("fill", function(d, i) {
+					var thisColor = color(i)
+					return thisColor;
+				})
+				.attr("d", arc)
+				.attr("class", function(d, i) {
+					var classValue = "";
+					if (!Array.isArray(className)) {
+						classValue = (className != undefined)
+							? className + "" + i
+							: "";
+					}
+					else {
+						classValue = className[i];
+					}
+					return classValue;
+				})
+				;
+			return arcs;
+		};
+		function set_text_label(textName, label) {
+			var txt = d3.select("#" + textName);
+			txt.text(label);		
+		};
+		function add_group_labels_and_names(groups, name){
+			function makeLabel(item, i, arr) {
+				var thisLabel = item.lo + "-" + item.hi + " yrs: " + item.cnt;	
+				return thisLabel;
+			}
+			function makeName(name, i) {
+				var thisName = "" + name + i;
+				return thisName;
+			}
+			//function setLabel(item, i, arr) {
+			//	arr[i].label = makeLabel(item, i, arr); 
+			//	return arr[i].label;
+			//}
+			//function setName(item, i, arr, name) {
+			//	arr[i].name = makeName(item, i, arr, name); 
+			//	return arr[i].name;
+			//}
+			function getLabelLength(item, i, arr) {
+				var len = item.length;	
+				return len;
+			}
+			var labels = groups.map(makeLabel);
+			var maxLabelLength = labels.map(getLabelLength).max();
+			for (var i = 0; i < groups.length; i++) {
+				if (groups[i] && labels[i]) {
+					//var padding = maxLabelLength - labels[i].length;
+					
+					//for (var j = 0; j < padding; j++) 
+					//	labels[i] = labels[i] + '&nbsp;'
+						
+					groups[i].label = labels[i];
+					groups[i].name = makeName(name, i);
+				}
+			}
+			
+			return groups;
+		}
+		function draw_sexes_pie(){
+
+			var height = 200;
+			var width = 200;
+			var s_pie_margin = 40;
+			var s_pie_radius = width/2;
+			var inner_radius = 0;
+			var s_pie = d3.layout.pie();
+			
+			var arc = create_arc(inner_radius, s_pie_radius);
+			var sp_svg = create_pie_chart("sexes_chart", width, height, "sexes_svg");
+			var arcs = create_arcs(sp_svg, s_pie, s_pie_radius, s_pie_radius, sexes);
+			var color = d3.scale.category10();
+
+			arc = draw_arcs(arcs, arc, color, [ "female", "male" ] );
+		
+			set_text_label("females", "Females: " + sexes[FEMALES]);
+			set_text_label("males", "Males: " + sexes[MALES]);
+			
+		};
+		
+		function draw_ages_pie(){
+			
+			var height = 200;
+			var width = 200;
+			var a_pie_margin = 40;
+			var a_pie_radius = width/2;
+			var inner_radius = 0;
+			var a_pie = d3.layout.pie();
+
+			var arc = create_arc(inner_radius, a_pie_radius);
+			var ap_svg = create_pie_chart("ages_chart", width, height, "ages_svg");
+			var arcs = create_arcs(ap_svg, a_pie, a_pie_radius, a_pie_radius, ages);
+			var color = d3.scale.category10();
+			arc = draw_arcs(arcs, arc, color, "group");
+
+			groups = add_group_labels_and_names(ageGroups, "ageGroup");
+			
+			for (var i = 0; i < groups.length; i++) {
+				if (groups[i]) {
+					set_text_label(groups[i].name, groups[i].label);
+				}
+			}
+
+		};
+
+		function draw_locations_pie(){
+
+			var height = 200;
+			var width = 200;
+			var l_pie_margin = 40;
+			var l_pie_radius = width/2;
+			var inner_radius = 0;
+			var l_pie = d3.layout.pie();
+
+			var arc = create_arc(inner_radius, l_pie_radius);
+			var lp_svg = create_pie_chart("locations_chart", width, height, "locations_svg");
+			var arcs = create_arcs(lp_svg, l_pie, l_pie_radius, l_pie_radius, locations);
+			var color = d3.scale.category10();
+
+			arc = draw_arcs(arcs, arc, color, [ "same", "diff" ] );
+		
+			set_text_label("same_location", "Same: " + locations[SAME]);
+			set_text_label("diff_location", "Different: " + locations[DIFF]);
+		};
+
+		function draw_all(){
+			draw_sexes_pie();
+			draw_ages_pie();
+			draw_locations_pie();
+		}
+
+
+	function setChangeHandler(id, classSelector, attribs, initialValue) {
+		// create jQuery selector, set initial value if defined
+	    var selector = id;
+		
+		if (initialValue != undefined)
+			$(selector).val(initialValue);
+
+		// create jQuery change handler 
+		// sets all matching classSelector elements with the attribute(s) to the new value
+		$(selector).change(function() { 
+            function isColor(attrName) {
+				return attrName = 'color';
+            }
+
+            var attrName;
+
+			var value = $(selector).val();
+			if (!Array.isArray(attribs)) {
+                $(classSelector).attr(attribs, value);
+                return true;
+			}
+
+			$(classSelector).each(function () { 
+
+				// attribute changes
+				for (var i = 0; i < attribs.length; i++) {
+					attrName = attribs[i];
+					var attrValue = $(this).attr(attrName)
+
+					if (isColor(attrName)) {
+						$(this).css(attrName, value);
+					}
+					else if (attrValue != undefined) {
+						$(this).attr(attrName, value);
+					}
+				}
+				return true;
+			});
+		});
+	}
+
+	$(document).ready(function () {
+		$('#maleColor').val(MALE_COLOR); // darkgreen
+		$('#femaleColor').val(FEMALE_COLOR); // darkorange
+
+		setChangeHandler('#maleColor',   '.male',   ['stroke', 'fill'], MALE_COLOR);
+		setChangeHandler('#femaleColor', '.female', ['stroke', 'fill'], FEMALE_COLOR);
+
+		setChangeHandler('#ageColor0',   '.group0', ['stroke', 'fill'], GROUP0_COLOR);
+		setChangeHandler('#ageColor1',   '.group1', ['stroke', 'fill'], GROUP1_COLOR);
+		setChangeHandler('#ageColor2',   '.group2', ['stroke', 'fill'], GROUP2_COLOR);
+		setChangeHandler('#ageColor3',   '.group3', ['stroke', 'fill'], GROUP3_COLOR);
+		setChangeHandler('#ageColor4',   '.group4', ['stroke', 'fill'], GROUP4_COLOR);
+		setChangeHandler('#ageColor5',   '.group5', ['stroke', 'fill'], GROUP5_COLOR);
+		setChangeHandler('#ageColor6',   '.group6', ['stroke', 'fill'], GROUP6_COLOR);
+		setChangeHandler('#ageColor7',   '.group7', ['stroke', 'fill'], GROUP7_COLOR);
+
+		setChangeHandler('#sameColor',   '.same', ['stroke', 'fill'], SAME_COLOR);
+		setChangeHandler('#diffColor',   '.diff', ['stroke', 'fill'], DIFF_COLOR);
+		
+	});
+
+	</script>
+	
+</body>
+
+
+</html>
