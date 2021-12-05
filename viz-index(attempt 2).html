@@ -57,7 +57,7 @@ var height = 400 - margin.top - margin.bottom;
 	
 var min = Infinity,
     max = -Infinity;
-	
+var data = [];
 // parse in the data	
 d3.csv("AgePref.csv", function(error, csv) {
 	// using an array of arrays with
@@ -66,14 +66,14 @@ d3.csv("AgePref.csv", function(error, csv) {
 	// data[i][0] = name of the ith column
 	// data[i][1] = array of values of ith column
 
-	var data = [];
+	
 	data[0] = [];
 	data[1] = [];
 	// add more rows if your csv file has more columns
 
 	// add here the header of the csv file
-	data[0][0] = "Prefer WFH";
-	data[1][0] = "Prefer WFO";
+	data[0][0] = "Work From Office";
+	data[1][0] = "Work From Home";
 	// add more rows if your csv file has more columns
 
 	data[0][1] = [];
@@ -87,11 +87,12 @@ d3.csv("AgePref.csv", function(error, csv) {
 		var rowMax = Math.max(v1, Math.max(v2));
 		var rowMin = Math.min(v1, Math.min(v2));
 
-		data[0][1].push(v1);
-		data[1][1].push(v2);
+		//data[0][1].push(v1);
+		//data[1][1].push(v2);
 		 // add more rows if your csv file has more columns
-		
-         
+		if (x.Preference == 1) data[0][1].push(v1);
+        if (x.Preference == 0) data[1][1].push(v1);
+        
 		if (rowMax > max) max = rowMax;
 		if (rowMin < min) min = rowMin;	
 	});
