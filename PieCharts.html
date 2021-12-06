@@ -6,7 +6,7 @@
     <meta name="course" content="INFO 517">
     <meta name="description" content="Worker Data">
     <meta charset="utf-8">
-	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles/project2.css">
 </head>
@@ -256,12 +256,12 @@
 						  { lo: 55, hi: 59, cnt: 0, label: "", name: "" }
 						];
 
-	Array.prototype.max = function() {
-	  return Math.max.apply(null, this);
-	};
-	Array.prototype.min = function() {
-	  return Math.min.apply(null, this);
-	};	
+		Array.prototype.max = function() {
+		  return Math.max.apply(null, this);
+		};
+		Array.prototype.min = function() {
+		  return Math.min.apply(null, this);
+		};	
 
 		// load ages, sexes, etc and draw pie charts
 		d3.csv("WFH_WFO_dataset.csv", function(data) {
@@ -335,7 +335,7 @@
 			return worker;
 		};
 		function create_arc(inner_radius, outer_radius) {
-			var arc = d3.svg.arc()
+			var arc = d3.arc()
 							.innerRadius(inner_radius)
 							.outerRadius(outer_radius);
 
@@ -350,7 +350,7 @@
 						.attr("transform", "translate(" + x_offset + ", " + y_offset + ")");
 			return arcs;
 		};
-		function create_pie_chart(chartName, width, height, svgName) {
+		function create_pie_svg(chartName, width, height, svgName) {
 
 			var svg = d3.select("#" + chartName)
 						.append("svg")
@@ -365,7 +365,7 @@
 			// Draw arc paths
 			arcs.append("path")
 				.attr("fill", function(d, i) {
-					var thisColor = color(i)
+					var thisColor = color[i]
 					return thisColor;
 				})
 				.attr("d", arc)
@@ -397,14 +397,6 @@
 				var thisName = "" + name + i;
 				return thisName;
 			}
-			//function setLabel(item, i, arr) {
-			//	arr[i].label = makeLabel(item, i, arr); 
-			//	return arr[i].label;
-			//}
-			//function setName(item, i, arr, name) {
-			//	arr[i].name = makeName(item, i, arr, name); 
-			//	return arr[i].name;
-			//}
 			function getLabelLength(item, i, arr) {
 				var len = item.length;	
 				return len;
@@ -413,11 +405,6 @@
 			var maxLabelLength = labels.map(getLabelLength).max();
 			for (var i = 0; i < groups.length; i++) {
 				if (groups[i] && labels[i]) {
-					//var padding = maxLabelLength - labels[i].length;
-					
-					//for (var j = 0; j < padding; j++) 
-					//	labels[i] = labels[i] + '&nbsp;'
-						
 					groups[i].label = labels[i];
 					groups[i].name = makeName(name, i);
 				}
@@ -430,15 +417,17 @@
 			var height = 200;
 			var width = 200;
 			var s_pie_margin = 40;
-			var s_pie_radius = width/2;
+			var s_pie_radius = width/2; // outer radius
 			var inner_radius = 0;
-			var s_pie = d3.layout.pie();
+			var corner_radius = 0;
+			var padAngle = 0.001;
 			
+			var sp_svg = create_pie_svg("sexes_chart", width, height, "sexes_svg");
+			
+			var s_pie = d3.pie();
 			var arc = create_arc(inner_radius, s_pie_radius);
-			var sp_svg = create_pie_chart("sexes_chart", width, height, "sexes_svg");
 			var arcs = create_arcs(sp_svg, s_pie, s_pie_radius, s_pie_radius, sexes);
-			var color = d3.scale.category10();
-
+			var color = d3.schemeCategory10;
 			arc = draw_arcs(arcs, arc, color, [ "female", "male" ] );
 		
 			set_text_label("females", "Females: " + sexes[FEMALES]);
@@ -453,12 +442,12 @@
 			var a_pie_margin = 40;
 			var a_pie_radius = width/2;
 			var inner_radius = 0;
-			var a_pie = d3.layout.pie();
+			var a_pie = d3.pie();
 
 			var arc = create_arc(inner_radius, a_pie_radius);
-			var ap_svg = create_pie_chart("ages_chart", width, height, "ages_svg");
+			var ap_svg = create_pie_svg("ages_chart", width, height, "ages_svg");
 			var arcs = create_arcs(ap_svg, a_pie, a_pie_radius, a_pie_radius, ages);
-			var color = d3.scale.category10();
+			var color = d3.schemeCategory10;
 			arc = draw_arcs(arcs, arc, color, "group");
 
 			groups = add_group_labels_and_names(ageGroups, "ageGroup");
@@ -478,12 +467,12 @@
 			var l_pie_margin = 40;
 			var l_pie_radius = width/2;
 			var inner_radius = 0;
-			var l_pie = d3.layout.pie();
+			var l_pie = d3.pie();
 
 			var arc = create_arc(inner_radius, l_pie_radius);
-			var lp_svg = create_pie_chart("locations_chart", width, height, "locations_svg");
+			var lp_svg = create_pie_svg("locations_chart", width, height, "locations_svg");
 			var arcs = create_arcs(lp_svg, l_pie, l_pie_radius, l_pie_radius, locations);
-			var color = d3.scale.category10();
+			var color = d3.schemeCategory10;
 
 			arc = draw_arcs(arcs, arc, color, [ "same", "diff" ] );
 		
@@ -496,7 +485,6 @@
 			draw_ages_pie();
 			draw_locations_pie();
 		}
-
 
 	function setChangeHandler(id, classSelector, attribs, initialValue) {
 		// create jQuery selector, set initial value if defined
@@ -566,3 +554,4 @@
 
 
 </html>
+
