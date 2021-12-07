@@ -1,118 +1,24 @@
-html {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  -webkit-text-size-adjust: 100%;
-}
-
 body {
-  padding: 0;
-  margin: 0;
-  font-size: 16px;
-  color: #fff;
-  background-color: #222a4d;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-h1 {
-  margin: 0;
-  color: #fff;
-  background: #000;
-  text-align: center;
-  font-size: 30px;
-  padding: 20px;
+.box {
+    font: 10px sans-serif;
 }
 
-ul {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(3, 200px);
-  grid-gap: 40px;
-  justify-content: center;
-  margin: 0;
-  padding: 40px 0;
+.box line,
+.box rect,
+.box circle {
+    fill: #fff;
+    stroke: #000;
+    stroke-width: 1.5px;
 }
 
-ul a {
-  display: block;
-  color: #fff;
-  background: rgb(3, 148, 233);
-  padding: 10px;
-  text-decoration: none;
-  text-align: center;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 5px;
+.box .center {
+    stroke-dasharray: 3, 3;
 }
 
-ul a:hover {
-  font-weight: 700;
-  opacity: .75;
-}
-
-h2 {
-  text-align: center;
-  font-size: 25px;
-  margin: 20px 0;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: black;
-  shape-rendering: crispEdges;
-}
-
-.tick text {
-  fill: black;
-  font-size: 11px;
-}
-
-.chart {
-  width: 600px;
-  height: 600px;
-  margin: 0 auto;
-  display: block;
-}
-
-rect {
-  stroke: white;
-}
-
-circle {
-  fill: #dfb8ff;
-}
-
-.col-lg-7 {
-  height: 30%;
-}
-
-.footer {
-  font-size: 12px;
-  font-style: italic;
-  text-align: center;
-  padding: 40px;
-}
-
-#introText {
-  padding: 0px 200px;
-}
-
-.placeholder-1 {
-  height: 400px;
-  width: 800px;
-  background-color: #fad400
-}
-
-.vis-2 {
-  padding-left: 100px;
-}
-
-.vis-buttons {
-  margin-top: 20px;
-  padding-left: 80px;
-  height: 50px;
-}
-
-.vis-button {
-  margin: 0px 7px;
-  background-color: rgb(231, 231, 231);
-  font-weight: 700;
+.box .outlier {
+    fill: none;
+    stroke: #ccc;
 }
