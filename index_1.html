@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>WFH vs WFO Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+	<link 
+		rel="stylesheet" 
+		type="text/css" 
+		href="project2.css" 
+	/>	
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <script 
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" 
+		integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" 
+		crossorigin="anonymous" 
+		referrerpolicy="no-referrer" />
+		
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+      html {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        -webkit-text-size-adjust: 100%;
+        height: 100%;
+      }
+
+      body {
+        padding: 0;
+        margin: 10px;
+        font-size: 16px;
+        height: 100%;
+        background-color: gainsboro
+      }
+
+      h1 {
+        margin: 0;
+        color: #fff;
+        background: #000;
+        text-align: center;
+        font-size: 30px;
+        padding: 20px;
+      }
+
+      ul {
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(3, 200px);
+        grid-gap: 40px;
+        justify-content: center;
+        margin: 0;
+        padding: 40px 0;
+      }
+
+      ul a {
+        display: block;
+        color: #fff;
+        background: #000;
+        padding: 10px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      ul a:hover {
+        font-weight: 700;
+        opacity: 0.75;
+      }
+
+      h2 {
+        text-align: center;
+        font-size: 25px;
+        margin: 20px 0;
+      }
+
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+      }
+
+      .tick text {
+        fill: black;
+        font-size: 11px;
+      }
+
+      .chart {
+        width: 600px;
+        height: 600px;
+        margin: 0 auto;
+        display: block;
+      }
+
+      rect {
+        stroke: white;
+      }
+
+      circle {
+        fill: #dfb8ff;
+      }
+
+      .col-lg-7 {
+        text-align: center;
+      }
+      .h-50 {
+        height: 50%;
+      }
+      .h-25 {
+        height: 25%;
+      }
+      .footer {
+        font-size: 12px;
+        font-style: italic;
+        text-align: center;
+        padding: 40px;
+      }
+
+      .donut-legend {
+        border: 1px solid #000;
+        text-align: start;
+        padding-left: 20px;
+        font-weight: 800;
+      }
+
+      .tool {
+        background-color: #bdbdbd; 
+        width: 200px; 
+        border-radius: 10px;
+        font-weight: 800;
+      }
+      .bar.tool {
+        
+        width: 300px; 
+        
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="tooltip"></div>
+    <div class="header">
+      <h1>WFH vs WFO Analysis</h1>
+      <ul>
+        <li>
+          <a href="index_1.html">Visualization</a>
+        </li>
+        <li>
+          <a href="Project_2_Vis_Documentation_code.html">Documentation</a>
+        </li>
+        <li>
+          <a href="video.html">Video</a>
+        </li>
+      </ul>
+    </div>
+    <div class="container-fluid">
+      <div class="row" id="introText">
+          <h2>Intro</h2>
+
+          <body>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.
+          </body>
+        </div>
+        <div class="row" >
+          <div class="barChart" id="barChart" style="text-align: center; margin-top: 30px">
+            <h2>Work From Home Preference</h2>
+            <div   
+                  style="
+                    font-weight: 900;
+                    font-size: 20px;
+                  "
+                >
+                  WFH vs. WFO Preference By Profession
+            </div>
+            <div class="map" id="main-viz">
+              <div class="row" style="justify-content: center">
+                <div id="wfh_pref_tool" class="tool"><br></div>
+				</div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div style="text-align: center; margin-top: 100px">
+            <h2>Work From Home Productivity With Kids</h2>
+            <div class="row">
+              <div class="col-lg-6">
+                <div
+                  class="row"
+                  style="
+                    justify-content: center;
+                    font-weight: 900;
+                    font-size: 20px;
+                  "
+                >
+                  Level of Productivity
+                </div>
+                <div class="row" style="justify-content: center">
+                <div id="pref_tool" class="tool"><br></div></div>
+                <div
+                  class="row"
+                  style="justify-content: center; margin-bottom: -30px; "
+                >
+                  Click on section to see share of individuals with kids
+                </div>
+                <svg width="500" height="400" id="cs_chart" style="cursor: pointer;"></svg>
+                <div class="row" style="justify-content: center">
+                  <div class="col-lg-6">
+                    <div class="donut-legend">
+                      PRODUCTIVITY
+                      <li style="color: #4daf4a">1 (Very Productive)</li>
+                      <li style="color: #377eb8">2 (Productive)</li>
+                      <li style="color: #ff7f00">3 (Neutral)</li>
+                      <li style="color: #984ea3">4 (Unproductive)</li>
+                      <li style="color: #e41a1c">5 (Very Unproductive)</li>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div
+                  class="row"
+                  style="
+                    justify-content: center;
+                    font-weight: 900;
+                    font-size: 20px;
+                    margin-bottom: -10px;
+                  "
+                >
+                  Share of those with kids
+                </div>
+                <div class="row" style="justify-content: center">
+                <div id="kid_tool" class="mt-2 tool" ><br></div></div>
+                <svg
+                  class="mainVis"
+                  id="chart"
+                  font-size="10px"
+                  width="500"
+                  height="400"
+                ></svg>
+                <div class="row" style="justify-content: center">
+                  <div class="col-lg-6">
+                    <div class="donut-legend">
+                      KIDS VS. NO KIDS
+                      <li style="color: #ff0033">Kids</li>
+                      <li style="color: #0dbf00">No Kids</li>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="justify-content: center">
+          <div class="col-12">
+            <div style="text-align: center; margin-top: 100px" >
+              <h2>Factors That Influence Those Who Are Calmer WFH</h2>
+              <div class="row" style="justify-content: center">
+              <div id="bar_tool" class="bar tool"><br></div></div>
+              <svg width="700" height="400" id="bar_chart"></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12"  width="800" height="620" >
+		<div id="charts" class="row" style="justify-content: center">
+			<div id="sexes_chart"  class="col-4" style="justify-content: center">
+				<h2>Workers by Sexes</h2>
+				<ul>
+					<li>			
+						<text id="females" class="female" ></text>
+					</li>
+					<li>
+						<input id="femaleColor" type="color" class="female"  />
+					</li>
+				</ul>
+				<ul>
+					<li>			
+						<text id="males" class="male" ></text>
+					</li>
+					<li>
+						<input id="maleColor" type="color" class="male"  />
+					</li>
+				</ul>
+			</div>
+			<div id="ages_chart" class="col-4" style="justify-content: center">
+				<h2>Workers by Age Groups</h2>
+				<ul>
+					<li>
+						<text id="ageGroup0" class="group0" ></text>
+						<input id="ageColor0" type="color" class=""  />
+					</li>
+					<li>
+						<text id="ageGroup1" class="group1" ></text>
+						<input id="ageColor1" type="color" class=""  />
+					</li>
+					<li>
+						<text id="ageGroup2" class="group2" ></text>
+						<input id="ageColor2" type="color" class=""  />
+					</li>
+					<li>
+						<text id="ageGroup3" class="group3" ></text>
+						<input id="ageColor3" type="color" class=""  />
+					</li>
+					<li>
+						<text id="ageGroup4" class="group4" ></text>
+						<input id="ageColor4" type="color" class=""  />
+					</li>
+					<li>
+						<text id="ageGroup5" class="group5" ></text>
+						<input id="ageColor5" type="color" class=""  />
+					</li>
+					<li>
+						<text id="ageGroup6" class="group6" ></text>
+						<input id="ageColor6" type="color" class=""  />
+					</li>
+					<li>
+						<text id="ageGroup7" class="group7" ></text>
+						<input id="ageColor7" type="color" class=""  />
+					</li>
+				</ul>
+			</div>
+			<div id="locations_chart" class="col-4" >
+				<h2>Workers by Location</h2>
+				<ul>
+					<li>			
+						<text id="same_location" class="same" ></text>
+					</li>
+					<li>
+						<input id="sameColor" type="color" class="same"  />
+					</li>
+				</ul>
+				<ul>
+					<li>			
+						<text id="diff_location" class="diff" ></text>
+					</li>
+					<li>
+						<input id="diffColor" type="color" class="diff"  />
+					</li>
+				</ul>
+			</div>
+		</div>
+      </div>
+      <div class=" row col-12" style="justify-content: center">	  
+		<iframe src="./index_2.html" width="800" height="820" style="border:none;" scrolling="no" title="Age Distribution for WFH Vs WFO preference"></iframe>	  
+      </div>
+<!--       <div class=" row col-12" width="800" height="620" style="justify-content: center">	  
+	  <br/>
+      </div> -->
+	</div>
+
+    <script type="text/javascript" >
+
+//------------------- pie charts ------------------------
+		var BLACK_COLOR = '#000000'; // black
+		var PURPLE_COLOR = '#ff00ff'; // purple
+		
+		//var MALE_COLOR = '#006400';  // darkgreen
+		// var FEMALE_COLOR = '#ff8c00'; // darkorange
+		var MALE_COLOR = '#ff6600';  
+		var FEMALE_COLOR = '#0059be'; 
+
+		var SAME_COLOR = FEMALE_COLOR;
+		var DIFF_COLOR = MALE_COLOR;
+
+		var GROUP0_COLOR = '#1f77b4';
+		var GROUP1_COLOR = '#ff7f0e';
+		var GROUP2_COLOR = '#2ca02c';
+		var GROUP3_COLOR = '#d62728';
+		var GROUP4_COLOR = '#9467bd';
+		var GROUP5_COLOR = '#8c564b';
+		var GROUP6_COLOR = '#ff1493';
+		var GROUP7_COLOR = '#000000';		
+	
+		// initialize arrays
+		var males = 0;
+		var females = 0;
+		var same_location = 0;
+		var diff_location = 0;
+		var ages = [];
+		var sexes = [];
+		var FEMALES = 0;
+		var MALES = 1;
+		var locations = [];
+		var SAME = 0;
+		var DIFF = 1;
+		var workers = [];
+		var ageGroups = [ { lo: 20, hi: 24, cnt: 0, label: "", name: "" },
+						  { lo: 25, hi: 29, cnt: 0, label: "", name: "" },
+						  { lo: 30, hi: 34, cnt: 0, label: "", name: "" },
+						  { lo: 35, hi: 39, cnt: 0, label: "", name: "" },
+						  { lo: 40, hi: 44, cnt: 0, label: "", name: "" },
+						  { lo: 45, hi: 49, cnt: 0, label: "", name: "" },
+						  { lo: 50, hi: 54, cnt: 0, label: "", name: "" },
+						  { lo: 55, hi: 59, cnt: 0, label: "", name: "" }
+						];
+
+		Array.prototype.max = function() {
+		  return Math.max.apply(null, this);
+		};
+		Array.prototype.min = function() {
+		  return Math.min.apply(null, this);
+		};	
+
+		// load ages, sexes, etc and draw pie charts
+		d3.csv("WFH_WFO_dataset.csv", function(data) {
+			for (var i = 0; i < data.length; i++) {
+				
+				// create worker data object from data
+				var worker = create_worker_object(data, i, ageGroups);
+				if (is_female(worker)) females++;
+				if (is_male(worker)) males++;
+				if (is_same_location(worker)) same_location++;
+				if (is_diff_location(worker)) diff_location++;
+
+				// add worker data to dataset
+				workers.push(worker);
+			};
+			
+			// aggregate counts of sexes
+			sexes.push(females, males);
+
+			// aggregate counts of ages
+			for (var j = 0; j < ageGroups.length; j++) 
+				ages.push(ageGroups[j].cnt); 
+
+			// aggregate counts of locations
+			locations.push(same_location, diff_location);
+
+			draw_all();
+		});
+
+		function is_female(worker) { 			
+			return (worker.Gender === 'Female');
+		};
+		function is_male(worker) {
+			return (worker.Gender === 'Male');
+		};
+		function is_same_location(worker) {
+			return (worker.Same_location === 'Yes');
+		};
+		function is_diff_location(worker) {
+			return (worker.Same_location === 'No');
+		};
+		function is_age_group(worker, ageGroups, i) {
+			return (worker.Age_Group === i || (worker.Age >= ageGroups[i].lo && worker.Age <= ageGroups[i].hi));
+		};
+		function create_worker_object(data, i, ageGroups) {
+				var age = +data[i].Age; // 45, 25,
+				var gender = data[i].Gender; // Female, Male,		
+				
+				// create worker data object from data
+				var worker = {
+					ID:  +data[i].ID, // 1, 17,
+					Age: age,
+					Gender: gender,
+					Same_location: data[i].Same_office_home_location, //Yes, No, 
+					// BAD  CSV data set uses: "Same_ofiice_home_location" 
+					// GOOD CSV data set uses: "Same_office_home_location"
+					Age_Group: -1
+				};	
+				
+			worker = set_worker_age_group(worker, ageGroups);
+			return worker;
+		};
+		function set_worker_age_group(worker, ageGroups) {
+			
+			// Check which age Group this worker belongs and increment its count.
+			for (var i = 0; i < ageGroups.length; i++) {
+				if (is_age_group(worker, ageGroups, i)) {
+					worker.Age_Group = i;
+					ageGroups[i].cnt++; 
+					break;
+				}
+			};
+			return worker;
+		};
+		function create_arc(inner_radius, outer_radius) {
+			var arc = d3.arc()
+							.innerRadius(inner_radius)
+							.outerRadius(outer_radius);
+			return arc;		
+		};
+		function create_arcs(svg, pie, x_offset, y_offset, data) {
+			var arcs = svg.selectAll("g.arc")
+						.data(pie(data))
+						.enter()
+						.append("g")
+						.attr("class", "arc")
+						.attr("transform", "translate(" + x_offset + ", " + y_offset + ")");
+			return arcs;
+		};
+		function create_pie_svg(chartName, width, height, svgName) {
+			var svg = d3.select("#" + chartName)
+						.append("svg")
+						.attr("width", width)
+						.attr("height", height)
+						.attr("class", "chart")
+						.attr("id", svgName);
+		
+			return svg;
+		};
+		function draw_arcs(arcs, arc, color, className) {
+			// Draw arc paths
+			arcs.append("path")
+				.attr("fill", function(d, i) {
+					var thisColor = color[i]
+					return thisColor;
+				})
+				.attr("d", arc)
+				.attr("class", function(d, i) {
+					var classValue = "";
+					if (!Array.isArray(className)) {
+						classValue = (className != undefined)
+							? className + "" + i
+							: "";
+					}
+					else {
+						classValue = className[i];
+					}
+					return classValue;
+				})
+				;
+			return arcs;
+		};
+		function set_text_label(textName, label) {
+			var txt = d3.select("#" + textName);
+			txt.text(label);		
+		};
+		function add_group_labels_and_names(groups, name){
+			function makeLabel(item, i, arr) {
+				var thisLabel = item.lo + "-" + item.hi + " yrs: " + item.cnt;	
+				return thisLabel;
+			}
+			function makeName(name, i) {
+				var thisName = "" + name + i;
+				return thisName;
+			}
+			function getLabelLength(item, i, arr) {
+				var len = item.length;	
+				return len;
+			}
+			var labels = groups.map(makeLabel);
+			var maxLabelLength = labels.map(getLabelLength).max();
+			for (var i = 0; i < groups.length; i++) {
+				if (groups[i] && labels[i]) {
+					groups[i].label = labels[i];
+					groups[i].name = makeName(name, i);
+				}
+			};
+			return groups;
+		};
+		function draw_sexes_pie(){
+			var height = 200;
+			var width = 200;
+			var s_pie_margin = 40;
+			var s_pie_radius = width/2; // outer radius
+			var inner_radius = 0;
+			var corner_radius = 0;
+			var padAngle = 0.001;
+			
+			var sp_svg = create_pie_svg("sexes_chart", width, height, "sexes_svg");
+			
+			var s_pie = d3.pie();
+			var arc = create_arc(inner_radius, s_pie_radius);
+			//create_arcs(svg, pie, x_offset, y_offset, data)
+			//var arcs = create_arcs(sp_svg, s_pie, s_pie_radius, s_pie_radius, sexes);
+			var arcs = create_arcs(sp_svg, s_pie, width, height/2, sexes);
+			var color = d3.schemeCategory10;
+			arc = draw_arcs(arcs, arc, color, [ "female", "male" ] );
+		
+			set_text_label("females", "Females: " + sexes[FEMALES]);
+			set_text_label("males", "Males: " + sexes[MALES]);
+		};
+		function draw_ages_pie(){
+			var height = 200;
+			var width = 200;
+			var a_pie_margin = 40;
+			var a_pie_radius = width/2;
+			var inner_radius = 0;
+			var a_pie = d3.pie();
+
+			var arc = create_arc(inner_radius, a_pie_radius);
+			var ap_svg = create_pie_svg("ages_chart", width, height, "ages_svg");
+			//create_arcs(svg, pie, x_offset, y_offset, data)
+			//var arcs = create_arcs(ap_svg, a_pie, a_pie_radius, a_pie_radius, ages);
+			var arcs = create_arcs(ap_svg, a_pie, width, height/2, ages);
+			var color = d3.schemeCategory10;
+			arc = draw_arcs(arcs, arc, color, "group");
+
+			groups = add_group_labels_and_names(ageGroups, "ageGroup");
+			
+			for (var i = 0; i < groups.length; i++) {
+				if (groups[i]) {
+					set_text_label(groups[i].name, groups[i].label);
+				}
+			};
+		};
+		function draw_locations_pie(){
+			var height = 200;
+			var width = 200;
+			var l_pie_margin = 40;
+			var l_pie_radius = width/2;
+			var inner_radius = 0;
+			var l_pie = d3.pie();
+
+			var arc = create_arc(inner_radius, l_pie_radius);
+			var lp_svg = create_pie_svg("locations_chart", width, height, "locations_svg");
+			//create_arcs(svg, pie, x_offset, y_offset, data)
+			//var arcs = create_arcs(lp_svg, l_pie, l_pie_radius, l_pie_radius, locations);
+			var arcs = create_arcs(lp_svg, l_pie, width, height/2, locations);
+			var color = d3.schemeCategory10;
+
+			arc = draw_arcs(arcs, arc, color, [ "same", "diff" ] );
+		
+			set_text_label("same_location", "Same: " + locations[SAME]);
+			set_text_label("diff_location", "Different: " + locations[DIFF]);
+		};
+		function draw_all(){
+			draw_sexes_pie();
+			draw_ages_pie();
+			draw_locations_pie();
+		};
+		function setChangeHandler(id, classSelector, attribs, initialValue) {
+			// create jQuery selector, set initial value if defined
+			var selector = id;
+			
+			if (initialValue != undefined)
+				$(selector).val(initialValue);
+
+			// create jQuery change handler 
+			// sets all matching classSelector elements with the attribute(s) to the new value
+			$(selector).change(function() { 
+				function isColor(attrName) {
+					return attrName = 'color';
+				}
+
+				var attrName;
+
+				var value = $(selector).val();
+				if (!Array.isArray(attribs)) {
+					$(classSelector).attr(attribs, value);
+					return true;
+				}
+
+				$(classSelector).each(function () { 
+
+					// attribute changes
+					for (var i = 0; i < attribs.length; i++) {
+						attrName = attribs[i];
+						var attrValue = $(this).attr(attrName)
+
+						if (isColor(attrName)) {
+							$(this).css(attrName, value);
+						}
+						else if (attrValue != undefined) {
+							$(this).attr(attrName, value);
+						}
+					}
+					return true;
+				});
+			});
+		};
+		$(document).ready(function () {
+			$('#maleColor').val(MALE_COLOR); 
+			$('#femaleColor').val(FEMALE_COLOR); 
+
+			setChangeHandler('#maleColor',   '.male',   ['stroke', 'fill'], MALE_COLOR);
+			setChangeHandler('#femaleColor', '.female', ['stroke', 'fill'], FEMALE_COLOR);
+
+			setChangeHandler('#ageColor0',   '.group0', ['stroke', 'fill'], GROUP0_COLOR);
+			setChangeHandler('#ageColor1',   '.group1', ['stroke', 'fill'], GROUP1_COLOR);
+			setChangeHandler('#ageColor2',   '.group2', ['stroke', 'fill'], GROUP2_COLOR);
+			setChangeHandler('#ageColor3',   '.group3', ['stroke', 'fill'], GROUP3_COLOR);
+			setChangeHandler('#ageColor4',   '.group4', ['stroke', 'fill'], GROUP4_COLOR);
+			setChangeHandler('#ageColor5',   '.group5', ['stroke', 'fill'], GROUP5_COLOR);
+			setChangeHandler('#ageColor6',   '.group6', ['stroke', 'fill'], GROUP6_COLOR);
+			setChangeHandler('#ageColor7',   '.group7', ['stroke', 'fill'], GROUP7_COLOR);
+
+			setChangeHandler('#sameColor',   '.same', ['stroke', 'fill'], SAME_COLOR);
+			setChangeHandler('#diffColor',   '.diff', ['stroke', 'fill'], DIFF_COLOR);
+		});
+//----------------------------------------------------------------------
+
+
+//----------------------------------------------------------------------
+
+      var margin = { top: 30, right: 30, bottom: 70, left: 60 },
+        width = 700 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+      var svg = d3
+        .select("#bar_chart")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+     
+      let results = [
+        { id: "Improved Skillset", value: 0 },
+        { id: "Work/Life Balance", value: 0 },
+        { id: "More Productive", value: 0 },
+        { id: "Laziness", value: 0 },
+        { id: "Professional Growth", value: 0 },
+      ];
+      let improved_skillset = 0;
+      let work_balance = 0;
+      let more_productive = 0;
+      let laziness = 0;
+      let professional_growth = 0;
+      let stressed = 81;
+      let calmer = 0;
+
+      d3.csv("WFH_WFO_dataset.csv", function (data) {
+        for (var i = 0; i < data.length; i++) {
+          str = data[i].calmer_stressed;
+          skills = data[i].RM_improved_skillset;
+          balance = data[i].RM_better_work_life_balance;
+          prod = data[i].RM_productive;
+          lazy = data[i].RM_lazy;
+          growth = data[i].RM_professional_growth;
+          if (str == "CALMER") {
+            calmer++;
+            results[0].value = results[0].value + +skills;
+            results[1].value = results[1].value + +balance;
+            results[2].value = results[2].value + +prod;
+            results[3].value = results[3].value + +lazy;
+            results[4].value = results[4].value + +growth;
+          } 
+
+          calmerBar();
+        }
+      });
+      
+      function calmerBar() {
+        
+        let x = d3
+          .scaleBand()
+          .range([0, width])
+          .domain(
+            results.map(function (d) {
+              return d.id;
+            })
+          )
+          .padding(0.2);
+        svg
+          .append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+
+        let y = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+        svg.append("g").call(d3.axisLeft(y));
+
+        svg
+          .selectAll()
+          .data(results)
+          .enter()
+          .append("rect")
+          .attr("x", function (d) {
+            return x(d.id);
+          })
+          .attr("y", function (d) {
+            return y(d.value / stressed);
+          })
+          .attr("width", x.bandwidth())
+          .attr("height", function (d) {
+            return height - y(d.value / stressed);
+          })
+          .attr("fill", "#ff0033")
+          .attr("class", function (results) {
+            return `${results.id}`;
+          })
+          .on("mouseover", (d => barToolTip(d.value / stressed)));
+      };
+
+      var kids = [
+        { id: 0, yes: 0, no: 0 },
+        { id: 1, yes: 0, no: 0 },
+        { id: 2, yes: 0, no: 0 },
+        { id: 3, yes: 0, no: 0 },
+        { id: 4, yes: 0, no: 0 },
+      ];
+
+      var productivity = [
+        { id: 0, total: 0 },
+        { id: 1, total: 0 },
+        { id: 2, total: 0 },
+        { id: 3, total: 0 },
+        { id: 4, total: 0 },
+      ];
+
+        d3.csv("WFH_WFO_dataset.csv", function (data) {
+          for (var i = 0; i < data.length; i++) {
+            kid = data[i].kids;
+            prod = data[i].RM_productive;
+            if (prod == 1) {
+              if (kid == "Yes") {
+                kids[0].yes++;
+              } else {
+                kids[0].no++;
+              }
+            } else if (prod == 2) {
+              if (kid == "Yes") {
+                kids[1].yes++;
+              } else {
+                kids[1].no++;
+              }
+            } else if (prod == 3) {
+              if (kid == "Yes") {
+                kids[2].yes++;
+              } else {
+                kids[2].no++;
+              }
+            } else if (prod == 4) {
+              if (kid == "Yes") {
+                kids[3].yes++;
+              } else {
+                kids[3].no++;
+              }
+            } else {
+              if (kid == "Yes") {
+                kids[4].yes++;
+              } else {
+                kids[4].no++;
+              }
+            }
+          }
+          drawKids(3);
+        });
+		
+        function drawKids(id) {
+        var kid_stat = [
+          { id: "Kids", response: kids[id].yes },
+          { id: "No kids", response: kids[id].no },
+        ];
+        var svg = d3.select("#chart"),
+          width = svg.attr("width"),
+          height = svg.attr("height");
+        var g = svg
+          .append("g")
+          .attr("transform", `translate(${width / 2}, ${height / 2})`);
+        var scale = d3.scaleOrdinal(["#ff0033", "#0dbf00"]);
+        var label = d3.scaleOrdinal(["Kids", "No kids"]);
+        var pie = d3.pie().value((d) => d.response);
+        var arc = g.selectAll("arc").data(pie(kid_stat)).enter();
+        var path = d3.arc().outerRadius(100).innerRadius(150);
+        arc
+          .append("path")
+          .attr("d", path)
+          .attr("class", (d) => label(d.data.id))
+          .attr("fill", (d) => scale(d.data.id))
+          .on("mouseover", (d => kidsToolTip(d.data.response)));
+      };
+
+      
+        d3.csv("WFH_WFO_dataset.csv", function (data) {
+          for (var i = 0; i < data.length; i++) {
+            prod = data[i].RM_productive;
+            if (prod == 1) {
+              productivity[0].total++;
+            } else if (prod == 2) {
+              productivity[1].total++;
+            } else if (prod == 3) {
+              productivity[2].total++;
+            } else if (prod == 4) {
+              productivity[3].total++;
+            } else {
+              productivity[4].total++;
+            }
+          }
+          drawProductivity();
+        });
+		
+        function drawProductivity() {
+        var svg = d3.select("#cs_chart"),
+          width = svg.attr("width"),
+          height = svg.attr("height");
+        var g = svg
+          .append("g")
+          .attr("transform", `translate(${width / 2}, ${height / 2})`);
+        var scale = d3.scaleOrdinal([
+          " #4daf4a",
+          "#377eb8",
+          "#ff7f00",
+          "#984ea3",
+          "#e41a1c",
+        ]);
+        var label = d3.scaleOrdinal(["1", "2", "3", "4", "5"]);
+        var pie = d3.pie().value((d) => d.total);
+        var arc = g.selectAll("arc").data(pie(productivity)).enter();
+        var path = d3.arc().outerRadius(100).innerRadius(150);
+        arc
+          .append("path")
+          .attr("d", path)
+          .attr("class", (d) => label(d.data.id))
+          .attr("fill", (d) => scale(d.data.id))
+          .on("click", function(d){
+            drawKids(d.data.id);
+            kidsToolTip('');
+          })
+          // .on("click", (d) => drawKids(d.data.id))
+          // .on("click", (d) => kidsToolTip(''))
+          .on("mouseover", (d => prefToolTip(d.data.total)))
+      };
+
+      drawProductivity();
+
+//----------------------------------------------------------------------
+
+      d3.csv("wfo_wfh_preference.csv", function (data) {
+        // set the dimensions and margins of the graph
+        var margin = { top: 10, right: 30, bottom: 20, left: 50 },
+          width = 460 - margin.left - margin.right,
+          height = 400 - margin.top - margin.bottom;
+
+        var height = 400;
+
+        var svg = d3
+          .select("#main-viz")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(50,10)");
+
+        var subgroups = data.columns.slice(1);
+
+        var groups = d3
+          .map(data, function (d) {
+            return d.group;
+          })
+          .keys();
+
+        // add X axis
+        var x = d3.scaleBand().domain(groups).range([0, width]).padding([0.2]);
+
+        svg
+          .append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x).tickSize(0));
+
+        // add Y axis
+        var y = d3.scaleLinear().domain([0, 30]).range([height, 0]);
+
+        svg.append("g").call(d3.axisLeft(y));
+
+        svg
+          .append("text")
+          .attr("x", 40)
+          .attr("y", 40)
+          .text("Count")
+          .attr("transform", "translate(-25, 40)")
+          .attr("transform", "rotate(90)");
+
+        // scale for subgroup position
+        var xSubgroup = d3
+          .scaleBand()
+          .domain(subgroups)
+          .range([0, x.bandwidth()])
+          .padding([0.05]);
+
+        // color pallet
+        var color = d3
+          .scaleOrdinal()
+          .domain(subgroups)
+          .range(["#FFA500", "#0000FF"]);
+
+        // show bars
+        svg
+          .append("g")
+          .selectAll("g")
+          .data(data)
+          .enter()
+          .append("g")
+          .attr("transform", function (d) {
+            return "translate(" + x(d.group) + ",0)";
+          })
+          .selectAll("rect")
+          .data(function (d) {
+            return subgroups.map(function (key) {
+              return { key: key, value: d[key] };
+            });
+          })
+          .enter()
+          .append("rect")
+          .attr("x", function (d) {
+            return xSubgroup(d.key);
+          })
+          .attr("y", function (d) {
+            return y(d.value);
+          })
+          .attr("width", xSubgroup.bandwidth())
+          .attr("height", function (d) {
+            return height - y(d.value);
+          })
+          .attr("fill", function (d) {
+            return color(d.key);
+          })
+          .on("mouseover", (d => wfhPrefToolTip(d.value)))
+
+        // append legend
+
+        // create a list of keys
+        var keys = ["Work From Home", "Work From Office"];
+
+        // Add one dot in the legend for each name.
+        var size = 20;
+        svg
+          .selectAll("myRects")
+          .data(keys)
+          .enter()
+          .append("rect")
+          .attr("x", 10)
+          .attr("y", function (d, i) {
+            return 2 + i * (size + 5);
+          }) // 100 is where the first dot appears. 25 is the distance between dots
+          .attr("width", size)
+          .attr("height", size)
+          .style("fill", function (d) {
+            return color(d);
+          });
+
+        // Add one dot in the legend for each name.
+        svg
+          .selectAll("label")
+          .data(keys)
+          .enter()
+          .append("text")
+          .attr("x", 10 + size * 1.2)
+          .attr("y", function (d, i) {
+            return 2 + i * (size + 5) + size / 2;
+          }) // 100 is where the first dot appears. 25 is the distance between dots
+          .style("fill", function (d) {
+            return color(d);
+          })
+          .text(function (d) {
+            return d;
+          })
+          .attr("text-anchor", "left")
+          .style("alignment-baseline", "middle")
+          .style("font-size", "15px");
+          
+      });
+
+      function barToolTip(value) {
+        selection = document.getElementById('bar_tool')
+        selection.innerHTML= '';
+        selection.appendChild(document.createTextNode("Average response: " + parseFloat(value).toFixed(2))) 
+      }
+      function kidsToolTip(value) {
+        
+        selection = document.getElementById('kid_tool')
+        selection.innerHTML= '';
+        
+        selection.appendChild(document.createTextNode(value === '' ? "Response:" : "Response: " + value)) 
+        }
+      
+      function prefToolTip(value) {
+        selection = document.getElementById('pref_tool')
+        selection.innerHTML= '';
+        selection.appendChild(document.createTextNode("Response: " + value)) 
+      }
+     
+      function wfhPrefToolTip(value) {
+        selection = document.getElementById('wfh_pref_tool')
+        selection.innerHTML= '';
+        selection.appendChild(document.createTextNode("Response: " + value)) 
+      }
+
+
+    </script>
+	
+	
+  </body>
+</html>
